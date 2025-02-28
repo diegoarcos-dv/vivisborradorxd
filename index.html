@@ -5,39 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invitación Cumpleaños Vivis</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playwrite+IN+Guides&display=swap" rel="stylesheet">
+    
+    <!-- Fuentes optimizadas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Monsieur+La+Doulaise&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Monsieur+La+Doulaise&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="encabezado animar">
         <img class="Vvs animar" src="80ani.png" alt="Imagen Vivis">
     </div>
+
     <div class="slider animar">
         <div class="slides">
             <img src="viv1.jpg" alt="Imagen 1">
             <img src="viv22.jpg" alt="Imagen 2">
             <img src="viv3.jpg" alt="Imagen 3" class="teen">
         </div>
-        <script>
-            // Slider automático
-            let index = 0;
-            const slides = document.querySelectorAll(".slides img");
-            
-            function changeSlide() {
-                index++;
-                if (index >= slides.length) {
-                    index = 0;
-                }
-                document.querySelector(".slides").style.transform = `translateX(${-index * 33.3333}%)`;
-            }
-            
-            setInterval(changeSlide, 3000);  // Cambia cada 3 segundos
-        </script>
     </div>
 
     <div class="invitado animar">
@@ -52,7 +36,7 @@
     <div class="asistencia animar">
         <span>Asistencia confirmada</span>
         <br>
-        <span>2 personas</span>
+        <span> <span id="invitados"></span> personas</span>
     </div>
 
     <div class="barra animar"></div>
@@ -81,35 +65,48 @@
     </div>
 
     <script>
-        // Obtener el nombre desde la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const nombre = urlParams.get('nombre') || 'Invitado';
-        document.getElementById('nombre').textContent = nombre;
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtener parámetros desde la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const nombre = urlParams.get('nombre') || 'Invitado';
+            document.getElementById('nombre').textContent = nombre;
 
-        // Generar dinámicamente la URL con el nombre para appweb.html
-        const appwebUrl = `appweb.html?nombre=${encodeURIComponent(nombre)}`;
+            const invitados = urlParams.get('invitados') || '1';
+            document.getElementById('invitados').textContent = invitados;
 
-        // Generar el código QR
-        const qrImg = document.getElementById("qr");
-        const qrBaseUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="; // API para generar QR
-        qrImg.src = `${qrBaseUrl}${encodeURIComponent(appwebUrl)}`;
-        qrImg.alt = `Código QR para ${nombre}`;
-    </script>
+            // Generar dinámicamente la URL con el nombre para appweb.html
+            const appwebUrl = `appweb.html?nombre=${encodeURIComponent(nombre)}`;
 
-    <script>
-        // Animación para los elementos
-        document.addEventListener("DOMContentLoaded", function () { 
+            // Generar el código QR
+            const qrImg = document.getElementById("qr");
+            const qrBaseUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=";
+            qrImg.src = `${qrBaseUrl}${encodeURIComponent(appwebUrl)}`;
+            qrImg.alt = `Código QR para ${nombre}`;
+
+            // Slider automático
+            let index = 0;
+            const slides = document.querySelectorAll(".slides img");
+
+            function changeSlide() {
+                index++;
+                if (index >= slides.length) {
+                    index = 0;
+                }
+                document.querySelector(".slides").style.transform = `translateX(${-index * 33.3333}%)`;
+            }
+
+            setInterval(changeSlide, 3000);
+
+            // Animación con Intersection Observer
             const elementosAnimar = document.querySelectorAll(".animar");
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add("visible");
-                    } else {
-                        entry.target.classList.remove("visible");
                     }
                 });
-            });
+            }, { rootMargin: "0px 0px -50px 0px" });
 
             elementosAnimar.forEach((elemento) => {
                 observer.observe(elemento);
